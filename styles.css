@@ -1,0 +1,16 @@
+body {
+    
+    font-size: 20px;
+    color: rgb(138, 19, 19);
+    background-repeat: no-repeat;
+}
+
+h1,h2,h3,h4,h5,h6,p,button {
+    text-align: center;
+}
+
+div {
+    border: 10px;
+    flex-wrap: wrap;
+    display: flex;
+}
