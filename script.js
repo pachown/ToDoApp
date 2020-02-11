@@ -1,99 +1,80 @@
-const todosContainer = document.querySelector('[data-todo]')
-const deleteTasksButton = document.querySelector('[data-delete-all-tasks-button')
-const taskCountElement = document.querySelector('[data-task-count')
-const tasksContainer = document.querySelector('[data-tasks')
-const taskTemplate = document.getElementById('task-template')
-const newTaskForm = document.querySelector('[data-new-task-form')
-const newTaskInput = document.querySelcector('[data-new-task-input')
-const clearCompleteTasksButton = document.querySelector('[data-clear-complete-tasks-button')
+//array of created todos
 
-const LOCAL_STORAGE_TASK_KEY = 'task'
-const LOCAL_STORAGE_SELCECTED_TASK_ID_KEY = task.id
-let lists = JSON.parse(localStorage.getItem(LOCAL_STORAGE_TASK_KEY)) || []
-let selectedListId = localStorage.getItem(LOCAL_STORAGE_SELCECTED_TASK_ID_KEY)
+let todoItems = [];
 
-tasksContainer.addEventListener('click', e => {
-    if (e.target.tagName.toLowerCase() === 'input') {
-        const selectedTask = tasks.find(task => task.id === e.target.id)
-        selectedTask.complete = e.target.checked
-        save()
-        renderTaskCount()
-    }
-})
+//defining variables
 
-clearCompletedTasksButton.addEventListener('click', e => {
-    const selectedTask = task.find(task => task.id === selectedTaskId)
-    tasks = tasks.filter(task => !task.complete)
-    saveAndRender()
-})
+const list = document.querySelector('[data-tasks]');
+const deleteCompletedTaskButton = document.querySelector('[data-clear-complete-tasks-button]');
+const deleteAllTasksButton = document.querySelector('[data-delete-all-tasks-button]');
 
-deleteTasksButton.addEventListener('click', e => {
-    tasks = tasks.filter(task => task.id !== selectedTaskId)
-    selectedTaskId = null
-    saveAndRender()
-})
+//Turn text into a new object and push to the todoItems Array
 
-newTaskForm.addEventListener('submit', e=> {
-    e.preventDefault()
-    const taskName = newTaskInput.value
-    if (taskName == null || taskName === '') return
-    const task = createTask(taskName)
-    newTaskInput.value = null
-    selectedtasks.push(task)
-    saveAndRender
-})
+function addTodo(text) {
+    const todo = {
+        text,
+        checked: false,
+        id: Date.now(),
+    };
 
-function createTask(name) {
-    return {id: Date.now().toString(), name: name, complete: false}
-}
+    todoItems.push(todo);
 
-function saveAndRender() {
-    save()
-    render()
-}
+//Uses the template in HTML to create the object wanted. This doesn't seem to be working as intended
 
-function save() {
-    localStorage.setItem(LOCAL_STORAGE_TASK_KEY, JSON.stringify(tasks))
-    localStorage.setItem(LOCAL_STORAGE_SELCECTED_Task_ID_KEY, selectedTaskId)
-}
-
-function render() {
-    clearElement(tasksContainer)
-    renderTasks()
-
-    const selectedTask = tasks.find(task => task.id === selectedTaskId)
-    if (selectedTaskId = null) {
-        taskDisplayContainer.style.display = 'none'
-    } else {
-        taskDisplayContainer.style.display = ''
-        taskTitleElement.innerText = selectedTask.name
-        renderTaskCount(task)
-    }
-}
-
-function renderTasks() {
-    selectedTask.forEach(task => {
-        const taskElement = document.importNode(taskTemplate.content, true)
-        const checkbox = taskElement.querySelector('input')
-        checkbox.id = task.id
-        checkbox.checked = task.complete
-        const label = taskElement.querySelector('label')
-        label.htmlFor = task.id
-        label.append(task.name)
-        tasksContainer.appendChild(taskElement)
+    function renderTodos() {
+    todoItems.forEach(todo =>{
+        const todoTemplate = document.getElementById('todo-template')
+        const todoElement = document.importNode(todoTemplate.content, true)
+        const checkbox = todoElement.querySelector('input')
+        checkbox.id = todo.id
+        checkbox.checked = todo.checked
+        const label = todoElement.querySelector('label')
+        label.htmlFor = todo.id
+        label.append(todo.text)
+        list.appendChild(todoElement)
     })
 }
 
-function renderTaskCount(tasks) {
-    const incompleteTaskCount = tasks.filter(task => !task.complete).length
-    const taskString = incompleteTaskCount === 1 ? "task" : "tasks"
-    taskCountElement.innerText = `${incompleteTaskCount} ${taskString} remaining`
+//clears the list and recreates it with the new array to avoid double posting
+
+clearElement(list)
+renderTodos(todoItems)
 }
 
+// listens for new tasks, trims them
+
+const form = document.querySelector('[data-new-task-form]');
+
+form.addEventListener('submit', event => {
+    event.preventDefault();
+    const input = document.querySelector('[data-new-task-input]');
+
+    const text = input.value.trim();
+    if (text !== '') {
+        addTodo(text);
+        input.value = '';
+        input.focus();
+    }
+});
+
+// for clearing & reposting elements upon new todos being added
 function clearElement(element) {
     while (element.firstChild) {
         element.removeChild(element.firstChild)
     }
 }
+//for deleting completed tasks
 
-render()
+deleteCompletedTaskButton.addEventListener('click', e => {
+    todoItems = todoItems.filter(todo => !todo.checked)
+    clearElement(list)
+    renderTodos(todoItems)
+})
+
+//for deleting all tasks
+
+deleteAllTasksButton.addEventListener('click', e => {
+    todoItems.length = 0
+    clearElement(list)
+    renderTodos(todoItems)
+})
