@@ -1,27 +1,22 @@
-//array of created todos
 
-let todoItems = [];
-
+// document.onload = renderTodos()
 //defining variables
 
 const list = document.querySelector('[data-tasks]');
 const deleteCompletedTaskButton = document.querySelector('[data-clear-complete-tasks-button]');
 const deleteAllTasksButton = document.querySelector('[data-delete-all-tasks-button]');
 
-//Turn text into a new object and push to the todoItems Array
+let todoItems
+    if(localStorage.getItem('todoItems') === null) {
+        todoItems = []; } else {
+            todoItems = JSON.parse(localStorage.getItem('todoItems'));
+        }
 
-function addTodo(text) {
-    const todo = {
-        text,
-        checked: false,
-        id: Date.now(),
-    };
 
-    todoItems.push(todo);
+//Uses the template in HTML to create the object wanted
 
-//Uses the template in HTML to create the object wanted. This doesn't seem to be working as intended
-
-    function renderTodos() {
+function renderTodos() {
+    clearElement(list)
     todoItems.forEach(todo =>{
         const todoTemplate = document.getElementById('todo-template')
         const todoElement = document.importNode(todoTemplate.content, true)
@@ -35,11 +30,20 @@ function addTodo(text) {
     })
 }
 
-//clears the list and recreates it with the new array to avoid double posting
+//Turn text into a new object and push to the todoItems Array
 
-clearElement(list)
-renderTodos(todoItems)
+function addTodo(text) {
+    const todo = {
+        text,
+        checked: false,
+        id: Date.now(),
+    };
+
+    todoItems.push(todo);
+    localStorage.setItem('todoItems', JSON.stringify(todoItems));
+    renderTodos(todoItems)
 }
+
 
 // listens for new tasks, trims them
 
@@ -55,7 +59,7 @@ form.addEventListener('submit', event => {
         input.value = '';
         input.focus();
     }
-});
+})
 
 // for clearing & reposting elements upon new todos being added
 function clearElement(element) {
@@ -63,18 +67,35 @@ function clearElement(element) {
         element.removeChild(element.firstChild)
     }
 }
-//for deleting completed tasks
 
-deleteCompletedTaskButton.addEventListener('click', e => {
-    todoItems = todoItems.filter(todo => !todo.checked)
-    clearElement(list)
-    renderTodos(todoItems)
-})
+//for checking items off
+
+// list.addEventListener('click', e => {
+//     if(e.target.tagName.toLowerCase() === 'input') {
+//       checkbox.checked = todo.checked};
+//     })
+//for deleting checked/completed tasks
+
+// deleteCompletedTaskButton.addEventListener('click', e => {
+//     for each todoItems(let index = 0; index < todoItems.length; index++) {
+//         if (todo.checked === true) {
+//             localStorage.removeItem('todo')
+//         }
+//     }
+//     localStorage.setItem('todoItems', JSON.stringify(todoItems));
+//     renderTodos()
+//     });
 
 //for deleting all tasks
 
 deleteAllTasksButton.addEventListener('click', e => {
+    
+    localStorage.clear()
     todoItems.length = 0
     clearElement(list)
     renderTodos(todoItems)
 })
+
+console.log(todoItems);
+
+renderTodos()
