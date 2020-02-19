@@ -66,7 +66,7 @@ list.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'input') {
         const clickedTodo = todoItems.find(todo => todo.id === e.target.id)
         console.log(clickedTodo);
-        // clickedTodo.complete = e.target.checked
+        clickedTodo.complete = e.target.checked
         localStorage.setItem('todoItems', JSON.stringify(todoItems))
         console.log(`${e.target.id} was clicked`);
     }
