@@ -1,19 +1,12 @@
-
-// document.onload = renderTodos()
 //defining variables
 
 const list = document.querySelector('[data-tasks]');
 const deleteCompletedTaskButton = document.querySelector('[data-clear-complete-tasks-button]');
 const deleteAllTasksButton = document.querySelector('[data-delete-all-tasks-button]');
 
-let todoItems
-    if(localStorage.getItem('todoItems') === null) {
-        todoItems = []; } else {
-            todoItems = JSON.parse(localStorage.getItem('todoItems'));
-        }
+let todoItems = JSON.parse(localStorage.getItem('todoItems')) || []
 
-
-//Uses the template in HTML to create the object wanted
+//Uses the template in HTML to create the todo objects in storage 
 
 function renderTodos() {
     clearElement(list)
@@ -22,7 +15,7 @@ function renderTodos() {
         const todoElement = document.importNode(todoTemplate.content, true)
         const checkbox = todoElement.querySelector('input')
         checkbox.id = todo.id
-        checkbox.checked = todo.checked
+        checkbox.checked = todo.complete
         const label = todoElement.querySelector('label')
         label.htmlFor = todo.id
         label.append(todo.text)
@@ -35,7 +28,7 @@ function renderTodos() {
 function addTodo(text) {
     const todo = {
         text,
-        checked: false,
+        complete: false,
         id: Date.now(),
     };
 
@@ -69,12 +62,16 @@ function clearElement(element) {
 }
 
 //for checking items off
+list.addEventListener('click', e => {
+    if (e.target.tagName.toLowerCase() === 'input') {
+        const clickedTodo = todoItems.find(todo => todo.id === e.target.id)
+        console.log(clickedTodo);
+        // clickedTodo.complete = e.target.checked
+        localStorage.setItem('todoItems', JSON.stringify(todoItems))
+        console.log(`${e.target.id} was clicked`);
+    }
+})
 
-// list.addEventListener('click', e => {
-//     if(e.target.tagName.toLowerCase() === 'input') {
-//       checkbox.checked = todo.checked};
-//     })
-//for deleting checked/completed tasks
 
 // deleteCompletedTaskButton.addEventListener('click', e => {
 //     for each todoItems(let index = 0; index < todoItems.length; index++) {
