@@ -1,98 +1,76 @@
-//defining variables
+// To-Do
+// make a typeable line that can be turned into local storage
+// make that storage line cross-off-able
+// make that storage line deleteable
+// make the page look good
+// make the page store memory in local storage so that list items appear even after reloading the page
 
-const list = document.querySelector('[data-tasks]');
-const deleteCompletedTaskButton = document.querySelector('[data-clear-complete-tasks-button]');
-const deleteAllTasksButton = document.querySelector('[data-delete-all-tasks-button]');
+var add_todo_btn = document.getElementById('add-btn');
+var todo_input = document.getElementById('todo-input');
+var list = document.getElementById('list');
+add_todo_btn.addEventListener('click', function () {
+    var todo= todo_input.value;
 
-let todoItems = JSON.parse(localStorage.getItem('todoItems')) || []
+    var item = document.createElement('DIV');
+    item.classList.add('item');
 
-//Uses the template in HTML to create the todo objects in storage 
+    var item_text = document.createElement('DIV');
+    item_text.classList.add('item-text');
+    item_text.textContent = todo;
 
-function renderTodos() {
-    clearElement(list)
-    todoItems.forEach(todo =>{
-        const todoTemplate = document.getElementById('todo-template')
-        const todoElement = document.importNode(todoTemplate.content, true)
-        const checkbox = todoElement.querySelector('input')
-        checkbox.id = todo.id
-        checkbox.checked = todo.complete
-        const label = todoElement.querySelector('label')
-        label.htmlFor = todo.id
-        label.append(todo.text)
-        list.appendChild(todoElement)
-    })
-}
+    var edit_input = document.createElement('INPUT');
+    edit_input.classList.add('edit-input');
+    edit_input.classList.add('hide');
+    edit_input.name = 'edit-input';
+    edit_input.type = 'text';
+    edit_input.value = todo;
 
-//Turn text into a new object and push to the todoItems Array
+    var edit_input_btn = document.createElement('BUTTON');
+    edit_input_btn.textContent = 'UPDATE';
+    edit_input_btn.classList.add('action-btn');
+    edit_input_btn.classList.add('update-btn');
+    edit_input_btn.classList.add('hide');
+    edit_input_btn.type = 'button';
 
-function addTodo(text) {
-    const todo = {
-        text,
-        complete: false,
-        id: Date.now(),
-    };
+    var action_btns = document.createElement('DIV');
+    action_btns.classList.add('action-btns');
 
-    todoItems.push(todo);
-    localStorage.setItem('todoItems', JSON.stringify(todoItems));
-    renderTodos(todoItems)
-}
+    var edit_btn = document.createElement('BUTTON');
+    edit_btn.classList.add('action-btn');
+    edit_btn.classList.add('edit-btn');
+    edit_btn.textContent = 'EDIT';
 
+    //Edit todos
 
-// listens for new tasks, trims them
+    edit_btn.addEvenetListener('click', function () {
+        edit_input.classList.remove('hide');
+        item_text.classList.add('hide');
+        edit_input_btn.classList.remove('hide');
+        edit_input_btn.addEventListener('click', function () {
+            item_text.textContent = edit_input.value;
+            edit_input.classList.add('hide');
+            item_text.classList.remove('hide');
+            edit_input_btn.classList.add('hide');
+        });
+    });
+    var remove_btn = document.createElement('BUTTON');
+    remove_btn.classList.add('action-btn');
+    remove_btn.classList.add('remove-btn');
+    remove_btn.textContent = 'REMOVE';
 
-const form = document.querySelector('[data-new-task-form]');
+    //Remove Todos
 
-form.addEventListener('submit', event => {
-    event.preventDefault();
-    const input = document.querySelector('[data-new-task-input]');
+    remove_btn.addEventListener('click', function () {
+        item.parentNode.removeChild(item);
+    });
 
-    const text = input.value.trim();
-    if (text !== '') {
-        addTodo(text);
-        input.value = '';
-        input.focus();
-    }
-})
+    action_btns.append(edit_input_btn);
+    action_btns.append(edit_btn);
+    action_btns.append(remove_btn);
+    item.append(item_text);
+    item.append(edit_input);
+    item.append(action_btns);
+    list.append(item);
 
-// for clearing & reposting elements upon new todos being added
-function clearElement(element) {
-    while (element.firstChild) {
-        element.removeChild(element.firstChild)
-    }
-}
-
-//for checking items off
-list.addEventListener('click', e => {
-    if (e.target.tagName.toLowerCase() === 'input') {
-        const clickedTodo = todoItems.find(todo => todo.id === e.target.id)
-        console.log(clickedTodo);
-        clickedTodo.complete = e.target.checked
-        localStorage.setItem('todoItems', JSON.stringify(todoItems))
-        console.log(`${e.target.id} was clicked`);
-    }
-})
-
-
-// deleteCompletedTaskButton.addEventListener('click', e => {
-//     for each todoItems(let index = 0; index < todoItems.length; index++) {
-//         if (todo.checked === true) {
-//             localStorage.removeItem('todo')
-//         }
-//     }
-//     localStorage.setItem('todoItems', JSON.stringify(todoItems));
-//     renderTodos()
-//     });
-
-//for deleting all tasks
-
-deleteAllTasksButton.addEventListener('click', e => {
-    
-    localStorage.clear()
-    todoItems.length = 0
-    clearElement(list)
-    renderTodos(todoItems)
-})
-
-console.log(todoItems);
-
-renderTodos()
+    todo_input.value = '';
+});
