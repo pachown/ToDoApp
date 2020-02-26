@@ -1,50 +1,28 @@
 <!DOCTYPE html>
-<html land="en">
+<html land='en'>
     <head>
         <meta charset ='UTF-8'>        
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>To-Do App</title>
-        <link rel= "stylesheet" href="styles.css">
         <script defer src='script.js'></script> 
+        <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
         <h1 class='title'>Things To Do</h1>
 
-        <div class='todo-list' data-list-display-container>
+        <div class='todo-list'>
 
             <div class='todo-header'>
                 <h2 class='task-title' >TO DO</h2>
-                <p class='task-count' data-task-count>3 tasks remaining</p>
             </div>
 
             <div class='todo-body'>
                 <div class = 'tasks' data-tasks></div>
-                    <!-- <div class='task'>
-                        <input type='checkbox'id='task-1'/>
-                        <label for='task-1'>
-                            <span class='custom-checkbox'></span>
-                            complete todo list app
-                        </label>
-                    </div>
-                    <div class='task'>
-                        <input type='checkbox'id='task-2'/>
-                        <label for='task-2'>
-                            <span class='custom-checkbox'></span>
-                            Crush noobs
-                        </label>
-                    </div>
-                    <div class='task'>
-                        <input type='checkbox'id='task-3'/>
-                        <label for='task-3'>
-                            <span class='custom-checkbox'></span>
-                            Master Javascript
-                        </label>
-                    </div> -->
                 <div class = 'new-task-creator'>
-                    <form action='' id = 'data-new-task-form'>
+                    <form action='' data-new-task-form>
                         <input 
-                        type='text'
                         data-new-task-input
+                        type='text'
                         class='new task'
                         placeholder='New task'
                         aria-label='new task name'
@@ -58,11 +36,11 @@
                     <button class='btn delete' data-delete-all-tasks-button>Delete All</button>
                 </div>
         </div>
-        <template id='task-template'>
-            <div class="task">
+        <template id='todo-template'>
+            <div class='task'>
                 <input type='checkbox' />
                 <label>
-                    <span class="custom-checkbox"></span>
+                    <span class='custom-checkbox'></span>
                 </label>
             </div>
         </template>
